@@ -1,0 +1,381 @@
+<!-- index.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Employee Management</title>
+    <style>
+        body {
+            font-family: Serif, sans-serif;
+            margin: 20px;
+        }
+
+        h1, h2 {
+            text-align: center;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+
+        th, td {
+            padding: 8px;
+            border: 1px solid black;
+            text-align: left;
+        }
+
+        th {
+            background-color: red;
+        }
+
+        .add-employee-button {
+            background-color: blue;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin-bottom: 20px;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+
+        .add-employee-popup {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: #f9f9f9;
+            padding: 20px;
+            border: 1px solid #ccc;
+            z-index: 1000;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .popup-close {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            cursor: pointer;
+            font-size: 20px;
+            color: #aaa;
+        }
+
+        .popup-close:hover {
+            color: #777;
+        }
+        .search-container {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .search-input {
+            padding: 8px;
+            width: 300px;
+        }
+
+        .search-button {
+            background-color: blue;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            text-align: center;
+            text-decoration: none;
+            font-size: 16px;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+
+    </style>
+</head>
+<body>
+    <!-- Your existing body content -->
+    <h1><i><b>Employee Management</b></i></h1>
+    <!-- Add filter dropdown or links -->
+    <div style="float: right; margin-top: -40px;">
+        <label for="filter">Filter names:</label>
+        <select id="filter" onchange="filterEmployees()">
+            <option value="">All</option>
+            <option value="A">A</option>
+            <option value="B">B</option>
+            <option value="C">C</option>
+            <option value="D">D</option>
+            <option value="E">E</option>
+            <option value="F">F</option>
+            <option value="G">G</option>
+            <option value="H">H</option>
+            <option value="I">I</option>
+            <option value="J">J</option>
+            <option value="K">K</option>
+            <option value="L">L</option>
+            <option value="M">M</option>
+            <option value="N">N</option>
+            <option value="O">O</option>
+            <option value="P">P</option>         
+            <option value="Q">Q</option>
+            <option value="R">R</option>
+            <option value="S">S</option>
+            <option value="T">T</option>
+            <option value="U">U</option>
+            <option value="V">V</option>
+            <option value="W">W</option>
+            <option value="X">X</option>
+            <option value="Y">Y</option>
+            <option value="Z">Z</option>
+            <!-- Add options for other letters as needed -->
+        </select>
+    </div>
+   <!-- Your existing script content -->
+    <script>
+        function filterEmployees() {
+            var filter = document.getElementById("filter").value;
+            var rows = document.getElementsByTagName("tr");
+            for (var i = 1; i < rows.length; i++) {  // Start from index 1 to skip header row
+                var firstLetter = rows[i].getElementsByTagName("td")[1].textContent.charAt(0);
+                if (filter === "" || firstLetter.toUpperCase() === filter) {
+                    rows[i].style.display = "";
+                } else {
+                    rows[i].style.display = "none";
+                }
+            }
+        }
+        function searchEmployees() {
+            var inputFirstName = document.getElementById("searchInputFirstName").value.toUpperCase();
+            var inputLastName = document.getElementById("searchInputLastName").value.toUpperCase();
+            var rows = document.getElementsByTagName("tr");
+            for (var i = 1; i < rows.length; i++) {  // Start from index 1 to skip header row
+                var firstName = rows[i].getElementsByTagName("td")[1].textContent.toUpperCase();
+                var lastName = rows[i].getElementsByTagName("td")[2].textContent.toUpperCase();
+                if (firstName.indexOf(inputFirstName) > -1 && lastName.indexOf(inputLastName) > -1) {
+                    rows[i].style.display = "";
+                } else {
+                     rows[i].style.display = "none";
+                }
+            }
+        }
+        // Function to sort employees alphabetically by first name
+        function sortEmployeesByFirstName(order) {
+            var rows = document.getElementsByTagName("tr");
+            var sortedRows = Array.from(rows).slice(1).sort(function(a, b) {
+                var nameA = a.getElementsByTagName("td")[1].textContent.toUpperCase();
+                var nameB = b.getElementsByTagName("td")[1].textContent.toUpperCase();
+                if (order === 'asc') {
+                    return (nameA < nameB) ? -1 : (nameA > nameB) ? 1 : 0;
+                } else {
+                    return (nameA > nameB) ? -1 : (nameA < nameB) ? 1 : 0;
+                }
+            });
+            // Re-append sorted rows to the table
+            for (var i = 0; i < sortedRows.length; i++) {
+                sortedRows[i].parentNode.appendChild(sortedRows[i]);
+            }
+        }
+
+        // Function to sort employees alphabetically by last name
+        function sortEmployeesByLastName(order) {
+            var rows = document.getElementsByTagName("tr");
+            var sortedRows = Array.from(rows).slice(1).sort(function(a, b) {
+                var nameA = a.getElementsByTagName("td")[2].textContent.toUpperCase();
+                var nameB = b.getElementsByTagName("td")[2].textContent.toUpperCase();
+                if (order === 'asc') {
+                    return (nameA < nameB) ? -1 : (nameA > nameB) ? 1 : 0;
+                } else {
+                    return (nameA > nameB) ? -1 : (nameA < nameB) ? 1 : 0;
+                }
+            });
+            // Re-append sorted rows to the table
+            for (var i = 0; i < sortedRows.length; i++) {
+                sortedRows[i].parentNode.appendChild(sortedRows[i]);
+            }
+        }
+
+        // Function to sort employees alphabetically by last name
+        function sortEmployeesByLastName(order) {
+            var rows = document.getElementsByTagName("tr");
+            var sortedRows = Array.from(rows).slice(1).sort(function(a, b) {
+                var nameA = a.getElementsByTagName("td")[2].textContent.toUpperCase();
+                var nameB = b.getElementsByTagName("td")[2].textContent.toUpperCase();
+                if (order === 'asc') {
+                    return (nameA < nameB) ? -1 : (nameA > nameB) ? 1 : 0;
+                } else {
+                    return (nameA > nameB) ? -1 : (nameA < nameB) ? 1 : 0;
+                }
+            });
+            // Re-append sorted rows to the table
+            for (var i = 0; i < sortedRows.length; i++) {
+                sortedRows[i].parentNode.appendChild(sortedRows[i]);
+            }
+        }    
+    
+    </script>
+     <!-- Your existing script content -->
+    <!-- <h1><i><b>Employee Management</b></i></h1> -->
+       <!-- # Search Bar  -->
+    <form action="{{ url_for('search') }}" method="GET">
+        <input type="text" name="query" id="searchInput" class="search-input" placeholder="Search by name...">
+        <button type="submit" class="search-button">Search</button>
+    </form>
+    <div id="addEmployeePopup" class="add-employee-popup">
+        <span class="popup-close" onclick="toggleAddEmployeePopup()">&times;</span>
+        <h2>Add Employee</h2>
+        <form method="POST" id="updateForm">
+            <div style="margin: 5px 0px;">
+                <label for="firstname">First Name:</label>
+                <input type="text" id="firstname" name="firstname" required>
+            </div>
+            <div style="margin: 5px 0px;">
+                <label for="lastname">Last Name:</label>
+                <input type="text" id="lastname" name="lastname" required>
+            </div>
+            <div style="margin: 5px 0px;">
+                <label for="phonenumber">Phone Number:</label>
+                <input type="tel" id="phonenumber" name="phonenumber" required>
+            </div>
+            <div style="margin: 5px 0px;">
+                <label for="gender">Gender:</label>
+                <select id="gender" name="gender" required>
+                    <option value="male">Male</option>
+                    <option value="female">Female</option>
+                    <option value="other">Other</option>
+                </select>
+            </div>
+            <div style="margin: 5px 0px;">
+                <label for="email">Email:</label>
+                <input type="email" id="email" name="email" required>
+            </div>
+            <button style="background-color: blue; color: white; padding: 4px 10px;" type="submit">Add Employee </button>
+        </form>
+    </div>
+    <h2>Employees:</h2>
+    <table>    
+        <tr>
+            <th>No</th> 
+            <th>
+                First Name
+                <select onchange="sortEmployeesByFirstName(this.value)">
+                    <option>All</option>
+                    <option value="asc">Ascending</option>
+                    <option value="desc">Descending</option>
+                </select>
+                <!-- <img id="sortIconFirstName" class="sort-icon" src="asc.jpg"> -->
+            </th>
+            <th>
+                Last Name
+                <select onchange="sortEmployeesByLastName(this.value)">
+                    <option>All</option>
+                    <option value="asc">Ascending</option>
+                    <option value="desc">Descending</option>
+                </select>
+                <!-- <img id="sortIconLastName" class="sort-icon" src="asc.jpg"> -->
+            </th>
+            
+            <th>Phone Number</th>
+            <th>Gender</th>
+            <th>Email</th>
+            <th>Action</th>
+            <th>Action</th>
+        </tr>
+        {% for employee in employees %}
+        <tr>
+            <td>{{ loop.index }}</td> <!-- Use loop.index for index numbering -->
+            <td>{{ employee.firstname }}</td>
+            <td>{{ employee.lastname }}</td>
+            <td>{{ employee.phonenumber }}</td>
+            <td>{{ employee.gender }}</td>
+            <td>{{ employee.email }}</td>
+            <td>
+                <form method="POST" action="{{ url_for('delete_employee', employee_id=employee.id) }}">
+                    <button type="submit">Delete</button>
+                </form>
+            </td>
+            <td> 
+                <button onclick="openUpdatePopup('{{ employee.id }}', '{{ employee.firstname }}', '{{ employee.lastname }}', '{{ employee.phonenumber }}', '{{ employee.gender }}', '{{ employee.email }}')">Update</button>
+            </td>
+            
+            <div id="updateEmployeePopup" class="add-employee-popup">
+                <span class="popup-close" onclick="toggleUpdateEmployeePopup()">&times;</span>
+                <h2>Update Employee</h2>
+                <form method="POST" action="{{ url_for('update_employee', employee_id=employee.id) }}" id="updateForm">
+                    <input type="hidden" id="updateEmployeeId" name="employee_id" value="">
+                    <div style="margin: 5px 0px;">
+                        <label for="updateFirstname">First Name:</label>
+                        <input type="text" id="updateFirstname" name="firstname" required>
+                    </div>
+                    <div style="margin: 5px 0px;">
+                        <label for="updateLastname">Last Name:</label>
+                        <input type="text" id="updateLastname" name="lastname" required>
+                    </div>
+                    <div style="margin: 5px 0px;">
+                        <label for="updatePhonenumber">Phone Number:</label>
+                        <input type="tel" id="updatePhonenumber" name="phonenumber" required>
+                    </div>
+                    <div style="margin: 5px 0px;">
+                        <label for="updateGender">Gender:</label>
+                        <select id="updateGender" name="gender" required>
+                            <option value="male">Male</option>
+                            <option value="female">Female</option>
+                            <option value="other">Other</option>
+                        </select>
+                    </div>
+                    <div style="margin: 5px 0px;">
+                        <label for="updateEmail">Email:</label>
+                        <input type="email" id="updateEmail" name="email" required>
+                    </div>
+                    <button style="background-color: blue; color: white; padding: 4px 10px;" type="submit">Update Employee</button>
+                </form>
+            </div>
+
+        </tr>
+        {% endfor %}
+    </table>
+    <button class="add-employee-button" onclick="toggleAddEmployeePopup()">Add Employee</button>
+    <script>
+        function toggleAddEmployeePopup() {
+            var popup = document.getElementById("addEmployeePopup");
+            if (popup.style.display === "block") {
+                popup.style.display = "none";
+            } else {
+                popup.style.display = "block";
+            }
+        }
+
+
+        function openUpdatePopup(employeeId, firstName, lastName, phoneNumber, gender, email) {
+            var popup = document.getElementById("updateEmployeePopup");
+            popup.style.display = "block";
+
+            // Populate form fields with existing employee details
+            document.getElementById("updateEmployeeId").value = employeeId;
+            document.getElementById("updateFirstname").value = firstName;
+            document.getElementById("updateLastname").value = lastName;
+            document.getElementById("updatePhonenumber").value = phoneNumber;
+            document.getElementById("updateGender").value = gender;
+            document.getElementById("updateEmail").value = email;
+        }
+
+        function toggleUpdateEmployeePopup() {
+            var popup = document.getElementById("updateEmployeePopup");
+            if (popup.style.display === "block") {
+                popup.style.display = "none";
+            } else {
+                popup.style.display = "block";
+            }
+        }
+    </script>
+    {% with messages = get_flashed_messages() %}
+    {% if messages %}
+    <ul>
+        {% for message in messages %}
+        <li>{{ message }}</li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+    {% endwith %}
+</body>
+</html>
